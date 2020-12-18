@@ -25,6 +25,7 @@
     "dotenv": "^8.2.0",
     "puppeteer-core": "^5.5.0",
     "puppeteer-in-electron": "^3.0.3",
+    "say": "^0.16.0",
     "ws": "^7.4.1"
   }
 }

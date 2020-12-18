@@ -5,6 +5,7 @@ const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
 require('dotenv').config();
 const {Chess} = require('chess.js')
+const say = require('say');
 
 
 const main = async () => {
@@ -72,6 +73,7 @@ const main = async () => {
         const {pieceType, square} = parsePieceDataDetails(pieceData)
         const originalSquare = /square-([0-9]+)/g.exec(oldValue)[1];
         if (pieceType && originalSquare && square && attributeChanged === 'class' && originalSquare !== square) {
+            say.speak(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`)
             console.log(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`);
         }
     }
