@@ -1,13 +1,17 @@
 const {TAGS} = require('./constants');
+const {connect} = require('./livechess');
 const {BrowserWindow, app} = require("electron");
 const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
 require('dotenv').config();
+const {Chess} = require('chess.js')
 
 
 const main = async () => {
     await pie.initialize(app);
     const browser = await pie.connect(app, puppeteer);
+    const chess = new Chess();
+    let move = 'w', castling = 'KQkq', enpessuant = '-', whiteMove = 0, blackMove = 1;
 
     const window = new BrowserWindow({
         webPreferences: {
@@ -25,6 +29,18 @@ const main = async () => {
     await page.click('#login');
     await page.waitForSelector('#quick-link-new_game');
     await page.goto('https://www.chess.com/play/online');
+
+    const onNewBoard = (fen) => {
+        chess.load(`${fen} ${move} ${castling} ${enpessuant} ${whiteMove} ${blackMove}`);
+        if (move === 'w') {
+            move = 'b';
+            whiteMove += 1;
+        } else if (move === 'b') {
+            move = 'w';
+            blackMove += 1;
+        }
+        console.log(chess.ascii());
+    }
 
     const parsePieceDataDetails = (pieceData) => {
         const pieceType = /piece ([wb][pkqnb])/g.exec(pieceData.class)[1];
@@ -55,7 +71,7 @@ const main = async () => {
     async function onPieceMoved(pieceData, attributeChanged, oldValue, newValue) {
         const {pieceType, square} = parsePieceDataDetails(pieceData)
         const originalSquare = /square-([0-9]+)/g.exec(oldValue)[1];
-        if (pieceType && originalSquare && square && attributeChanged === 'class') {
+        if (pieceType && originalSquare && square && attributeChanged === 'class' && originalSquare !== square) {
             console.log(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`);
         }
     }
@@ -167,6 +183,8 @@ const main = async () => {
     await page.exposeFunction('onPieceMoved', onPieceMoved);
 
     await evaluateAndListen(true, true, true);
+
+    connect(onNewBoard);
 
     // window.destroy();
 };
