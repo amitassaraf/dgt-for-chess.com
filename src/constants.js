@@ -2,10 +2,8 @@ module.exports = {
     TAGS: {
         CHESS_BOARD: "CHESS-BOARD"
     },
-    COLOR: {
-        BLACK: 'b',
-        WHITE: 'w'
-    },
+    DEFAULT_CASTLING_RIGHTS: 'KQkq',
+    DEFAULT_EN_PASSANT: 'KQkq',
     LIVE_CHESS: {
         HOSTNAME: '127.0.0.1',
         PORT: 1982,

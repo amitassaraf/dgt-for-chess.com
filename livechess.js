@@ -1,5 +1,5 @@
 const WebSocket = require('ws');
-const {LIVE_CHESS} = require('./constants');
+const {LIVE_CHESS} = require('./src/constants');
 
 let messageId = 1;
 
