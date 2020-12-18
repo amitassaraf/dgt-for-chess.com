@@ -1,4 +1,4 @@
-const {TAGS} = require('./constants');
+const {TAGS, COLUMN_TO_LETTER} = require('./constants');
 const {connect} = require('./livechess');
 const {BrowserWindow, app} = require("electron");
 const pie = require("puppeteer-in-electron")
@@ -36,7 +36,45 @@ const main = async () => {
     await page.waitForSelector('#quick-link-new_game');
     await page.goto('https://www.chess.com/play/computer');
 
-    const onNewBoard = (fen) => {
+    const chessDotComSquareToPGN = (squareCode) => {
+        const column = COLUMN_TO_LETTER[squareCode[0]];
+        const row = squareCode[1];
+        return `${column}${row}`;
+    }
+
+    const pgnSquareToChessDotComSquare = (pngCode) => {
+        const column = Object.keys(COLUMN_TO_LETTER).find(key => COLUMN_TO_LETTER[key] === pngCode[0]);
+        const row = pngCode[1];
+        return `${column}${row}`;
+    }
+
+    const pgnSquareToSquareObject = (pgnCode) => {
+        return {column: pgnCode[0], row: pgnCode[1]};
+    }
+
+    const chessDotComSquareToSquareObject = (squareCode) => {
+        return {column: squareCode[0], row: squareCode[1]};
+    }
+
+
+    const movePiece = async (sourceSquare, piece, targetSquare) => {
+        const board = await page.$(`chess-board`);
+        const boardBoundingBox = await board.boundingBox();
+
+        const pieceNode = await page.$(`[class~="square-${sourceSquare}"][class~="piece"][class~="${piece}"]`);
+        const pieceBoundingBox = await pieceNode.boundingBox();
+
+        const targetSquareObject = chessDotComSquareToSquareObject(targetSquare);
+        const targetX = (boardBoundingBox.x) + ((targetSquareObject.column - 1) * pieceBoundingBox.width) + (pieceBoundingBox.width / 2);
+        const targetY = (boardBoundingBox.y + boardBoundingBox.height) - (targetSquareObject.row * pieceBoundingBox.height) + (pieceBoundingBox.height / 2);
+
+        await page.mouse.move(pieceBoundingBox.x + pieceBoundingBox.width / 2, pieceBoundingBox.y + pieceBoundingBox.height / 2);
+        await page.mouse.down();
+        await page.mouse.move(targetX, targetY);
+        await page.mouse.up();
+    };
+
+    const onNewBoard = async (fen) => {
         chess.load(`${fen} ${move} ${castling} ${enpessuant} ${whiteMove} ${blackMove}`);
         if (move === 'w') {
             move = 'b';
@@ -45,7 +83,6 @@ const main = async () => {
             move = 'w';
             blackMove += 1;
         }
-        console.log(chess.ascii());
     }
 
     const parsePieceDataDetails = (pieceData) => {
@@ -83,10 +120,7 @@ const main = async () => {
             attributeChanged === 'class' &&
             originalSquare !== square &&
             oldValue.indexOf('dragging') === -1) {
-            // console.log(attributeChanged);
-            // console.log(oldValue);
-            // console.log(newValue);
-            // say.speak(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`)
+            say.speak(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`)
             console.log(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`);
         }
     }

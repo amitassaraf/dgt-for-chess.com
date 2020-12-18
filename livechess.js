@@ -18,7 +18,7 @@ module.exports = {
             ws.send(listBoardsCall());
         });
 
-        ws.on('message', function incoming(data) {
+        ws.on('message', async function incoming(data) {
             data = JSON.parse(data);
             if (data.response === 'call') {
                 if (data.id === 1) { //First message is always list boards
@@ -29,7 +29,7 @@ module.exports = {
                     }
                 }
             } else if (data.response === 'feed') {
-                onNewBoard(data.param.board);
+                await onNewBoard(data.param.board);
             } else {
                 console.log(data);
             }
