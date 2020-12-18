@@ -15,21 +15,26 @@ const main = async () => {
     let move = 'w', castling = 'KQkq', enpessuant = '-', whiteMove = 0, blackMove = 1;
 
     const window = new BrowserWindow({
-        webPreferences: {
-            nodeIntegration: true
-        }
+        width: 1200,
+        height: 800
     });
+
+    // window.webContents.openDevTools();
+
 
     const url = "https://www.chess.com/";
     await window.loadURL(url);
 
+    const username = process.env.USERNAME;
+    const password = process.env.PASSWORD;
+
     const page = await pie.getPage(browser, window);
     await page.goto('https://www.chess.com/login');
-    await page.$eval('#username', el => el.value = process.env.USERNAME);
-    await page.$eval('#password', el => el.value = process.env.PASSWORD);
+    await page.$eval('#username', (el, user) => el.value = user, username);
+    await page.$eval('#password', (el, pass) => el.value = pass, password);
     await page.click('#login');
     await page.waitForSelector('#quick-link-new_game');
-    await page.goto('https://www.chess.com/play/online');
+    await page.goto('https://www.chess.com/play/computer');
 
     const onNewBoard = (fen) => {
         chess.load(`${fen} ${move} ${castling} ${enpessuant} ${whiteMove} ${blackMove}`);
@@ -72,8 +77,16 @@ const main = async () => {
     async function onPieceMoved(pieceData, attributeChanged, oldValue, newValue) {
         const {pieceType, square} = parsePieceDataDetails(pieceData)
         const originalSquare = /square-([0-9]+)/g.exec(oldValue)[1];
-        if (pieceType && originalSquare && square && attributeChanged === 'class' && originalSquare !== square) {
-            say.speak(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`)
+        if (pieceType &&
+            originalSquare &&
+            square &&
+            attributeChanged === 'class' &&
+            originalSquare !== square &&
+            oldValue.indexOf('dragging') === -1) {
+            // console.log(attributeChanged);
+            // console.log(oldValue);
+            // console.log(newValue);
+            // say.speak(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`)
             console.log(`Piece ${pieceType} moved from Square ${originalSquare} to Square ${square}`);
         }
     }
@@ -153,7 +166,10 @@ const main = async () => {
             }
 
             if (initial) {
-                const target = document.querySelector('.board-layout-chessboard');
+                let target = document.querySelector('.board-layout-chessboard');
+                if (!target) {
+                    target = document.querySelector('.layout-board-section');
+                }
 
                 if (document.globalObserver) {
                     document.globalObserver.disconnect();
