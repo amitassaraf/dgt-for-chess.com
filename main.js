@@ -87,7 +87,7 @@ const main = async () => {
                 document.boardObserver = new MutationObserver((mutationsList) => {
                     for (const mutation of mutationsList) {
                         if (mutation.type === 'childList') {
-                            window['onPieceRemovedOrAdded'](
+                            window.onPieceRemovedOrAdded(
                                 mutation.removedNodes[0] && getNodeData(mutation.removedNodes[0]),
                                 mutation.addedNodes[0] && getNodeData(mutation.addedNodes[0]),
                             );
@@ -111,7 +111,7 @@ const main = async () => {
                 document.piecesObserver = new MutationObserver((mutationsList) => {
                     for (const mutation of mutationsList) {
                         if (mutation.type === 'attributes') {
-                            window['onPieceMoved'](
+                            window.onPieceMoved(
                                 getNodeData(mutation.target),
                                 mutation.attributeName,
                                 mutation.oldValue,
@@ -144,7 +144,7 @@ const main = async () => {
                 document.globalObserver = new MutationObserver((mutationsList) => {
                     for (const mutation of mutationsList) {
                         if (mutation.type === 'childList') {
-                            window['onChessboardChange'](
+                            window.onChessboardChange(
                                 mutation.removedNodes[0] && getNodeData(mutation.removedNodes[0]),
                                 mutation.addedNodes[0] && getNodeData(mutation.addedNodes[0]),
                             );
