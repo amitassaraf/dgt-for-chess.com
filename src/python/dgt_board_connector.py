@@ -43,6 +43,7 @@ async def simple(websocket, path):
                     "type": "board",
                     "fen": board.board_fen()[::-1],
                 }))
+            sys.stdout.flush()
 
 
 loop.run_until_complete(websockets.serve(simple, '127.0.0.1', 9991))

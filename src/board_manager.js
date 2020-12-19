@@ -1,5 +1,7 @@
 const {BOARD_WEBSOCKET} = require("./constants");
 const spawn = require("child_process").spawn;
+const WebSocket = require('ws');
+const _ = require('lodash');
 
 
 class BoardManager {
@@ -7,6 +9,7 @@ class BoardManager {
         this.boardConnected = false;
         this.boardCallback = boardCallback
         this.process = undefined;
+        this.ws = undefined;
     }
 
     spawn = () => {
@@ -20,27 +23,25 @@ class BoardManager {
                     case 'connection':
                         this.boardConnected = message.status !== 'disconnected';
                         console.log('Board connected.');
+                        this.ws = new WebSocket(`ws://${BOARD_WEBSOCKET.HOSTNAME}:${BOARD_WEBSOCKET.PORT}/`);
                         break;
                     case 'board':
                         this.boardCallback && this.boardCallback(message.fen);
                         break
                 }
             } catch (e) {
-                
+
             }
 
         });
         console.log('Spawned process.');
     }
 
-    getBoard = async () => {
-        if (this.boardConnected) {
-            const ws = new WebSocket(`ws://${BOARD_WEBSOCKET.HOSTNAME}:${BOARD_WEBSOCKET.PORT}/`);
-            ws.on('open', function open() {
-                ws.send('get_board');
-            });
+    getBoard = _.throttle(async () => {
+        if (this.boardConnected && this.ws) {
+            this.ws.send('get_board');
         }
-    }
+    }, 750, {'trailing': false});
 }
 
 module.exports = {

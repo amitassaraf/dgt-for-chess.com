@@ -22,7 +22,7 @@ class PageManager {
         await this.synchronizeBoard();
         this.isBoardInSync = false;
         console.log('Board not synced.');
-    }, 500);
+    }, 750, { 'trailing': false });
 
     synchronizeBoard = async () => {
         const chessDotComBoard = await getBoardOnChessDotCom(this.page);
