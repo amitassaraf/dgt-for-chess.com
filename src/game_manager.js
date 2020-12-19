@@ -1,5 +1,6 @@
 const {Chess} = require('chess.js')
 const {DEFAULT_CASTLING_RIGHTS, DEFAULT_EN_PASSANT, WHITE, BLACK} = require('./constants');
+const say = require('say');
 
 
 class GameManager {
@@ -31,6 +32,19 @@ class GameManager {
     loadFen = (fen) => {
         this.chessBoard.clear();
         this.chessBoard.load(fen);
+        if (this.chessBoard.game_over()) {
+            if (this.chessBoard.in_checkmate()) {
+                say.speak('Checkmate.')
+            } else if (this.chessBoard.in_stalemate()) {
+                say.speak('Stalemate.')
+            } else if (this.chessBoard.in_draw()) {
+                say.speak('Draw.')
+            } else if (this.chessBoard.in_threefold_repetition()) {
+                say.speak('Draw by repetition.')
+            }
+        } else if (this.chessBoard.in_check()) {
+            say.speak('Check.')
+        }
     }
 
     getFen = () => {

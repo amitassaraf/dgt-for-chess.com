@@ -4,10 +4,9 @@ module.exports = {
     },
     DEFAULT_CASTLING_RIGHTS: 'KQkq',
     DEFAULT_EN_PASSANT: '-',
-    LIVE_CHESS: {
+    BOARD_WEBSOCKET: {
         HOSTNAME: '127.0.0.1',
-        PORT: 1982,
-        BASE_URL: '/api/v1.0'
+        PORT: 9991,
     },
     COLUMN_TO_LETTER: {
         1: 'a',
@@ -24,5 +23,13 @@ module.exports = {
     BLACK: 'b',
     WHITE: 'w',
     PAWN: 'p',
-    QUEEN: 'q'
+    QUEEN: 'q',
+    PIECE_NOTATION_TO_NAME: {
+        'q': 'Queen',
+        'r': 'Rook',
+        'p': 'Pawn',
+        'b': 'Bishop',
+        'n': 'Knight',
+        'k': 'King',
+    }
 }

@@ -4,6 +4,7 @@ const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
 require('dotenv').config();
 const say = require('say');
+const {PIECE_NOTATION_TO_NAME} = require("./src/constants");
 const {squareObjectToPGN} = require("./src/chess_dot_com_utils");
 const {squareObjectToChessDotCom} = require("./src/chess_dot_com_utils");
 const {BoardManager} = require("./src/board_manager");
@@ -78,7 +79,7 @@ const main = async () => {
             attributeChanged === 'class' &&
             originalSquare !== squareObjectToChessDotCom(pieceInfo) &&
             oldValue.indexOf('dragging') === -1) {
-            say.speak(`${squareObjectToPGN(pieceInfo)}`);
+            say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} to ${squareObjectToPGN(pieceInfo)}`);
             await pageManager.onChessDotComBoardChange();
             await boardManager.getBoard();
         }

@@ -11,8 +11,9 @@ const isLegalMove = (position, from, to, promotion) => {
 }
 
 const isPromotion = (color, piece, square) => {
-    return (color === BLACK && piece === PAWN && square.row === '1') ||
-        (color === WHITE && piece === PAWN && square.row === '8')
+    // Soft comparison on purpose.
+    return (color === BLACK && piece === PAWN && square.row == '1') ||
+        (color === WHITE && piece === PAWN && square.row == '8')
 }
 
 const findRowAndColumnForPiece = (originalBoard, newBoard, piece) => {
