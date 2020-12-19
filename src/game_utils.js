@@ -29,6 +29,24 @@ const findRowAndColumnForPiece = (originalBoard, newBoard, piece) => {
     }
 }
 
+const findPossibleCaptures = (board, piece) => {
+    const captures = [];
+    for (let row = 0; row < ROWS; row++) {
+        for (let column = 0; column < COLUMNS; column++) {
+            if (board[row][column] &&
+                board[row][column].color !== piece.color) {
+                if (isLegalMove(board.fen(), {
+                    column: column + 1,
+                    row: ROWS - row
+                }, piece, isPromotion(board[row][column].color, board[row][column].type, piece))) {
+                    captures.push({...board[row][column], column: column + 1, row: ROWS - row});
+                }
+            }
+        }
+    }
+    return captures;
+}
+
 const getMovesMadeByComparingChessBoard = (originalBoard, newBoard) => {
     const originalBoardArray = originalBoard.board();
     const newBoardArray = newBoard.board();
@@ -64,5 +82,6 @@ module.exports = {
     isPromotion,
     findRowAndColumnForPiece,
     getMovesMadeByComparingChessBoard,
-    isLegalMove
+    isLegalMove,
+    findPossibleCaptures
 }

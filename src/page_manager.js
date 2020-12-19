@@ -51,7 +51,7 @@ class PageManager {
                 }
                 if (!legalMove) {
                     if (move.color !== this.game_manager.getTurn()) {
-                        say.speak(`It is not your turn. [It's ${this.game_manager.getTurn()}'s]`);
+                        say.speak(`It is not your turn.`);
                     } else {
                         say.speak(`Illegal move made.`);
                     }

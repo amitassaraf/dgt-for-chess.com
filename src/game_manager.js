@@ -1,6 +1,7 @@
 const {Chess} = require('chess.js')
 const {DEFAULT_CASTLING_RIGHTS, DEFAULT_EN_PASSANT, WHITE, BLACK} = require('./constants');
 const say = require('say');
+const {findPossibleCaptures} = require("./game_utils");
 
 
 class GameManager {
@@ -9,6 +10,8 @@ class GameManager {
         this.playerColor = playerColor;
         this.castlingRights = DEFAULT_CASTLING_RIGHTS;
         this.enPassant = DEFAULT_EN_PASSANT;
+        this.lastPieceRemoved = undefined;
+        this.lastPiecePossibleCaptures = [];
     }
 
     setPlayerColor = (color) => {
@@ -34,13 +37,15 @@ class GameManager {
         this.chessBoard.load(fen);
         if (this.chessBoard.game_over()) {
             if (this.chessBoard.in_checkmate()) {
-                say.speak('Checkmate.')
+                say.speak('Checkmate.');
             } else if (this.chessBoard.in_stalemate()) {
-                say.speak('Stalemate.')
+                say.speak('Stalemate.');
             } else if (this.chessBoard.in_draw()) {
-                say.speak('Draw.')
+                say.speak('Draw.');
             } else if (this.chessBoard.in_threefold_repetition()) {
-                say.speak('Draw by repetition.')
+                say.speak('Draw by repetition.');
+            } else if (this.chessBoard.insufficient_material()) {
+                say.speak('Draw by insufficient material.');
             }
         } else if (this.chessBoard.in_check()) {
             say.speak('Check.')
@@ -53,6 +58,15 @@ class GameManager {
 
     getTurn = () => {
         return this.chessBoard.turn();
+    }
+
+    setLastPieceRemoved = (piece) => {
+        this.lastPieceRemoved = piece;
+        if (piece) {
+            this.lastPiecePossibleCaptures = findPossibleCaptures(this.chessBoard, piece);
+        } else {
+            this.lastPiecePossibleCaptures = [];
+        }
     }
 
 }

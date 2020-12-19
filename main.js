@@ -4,11 +4,11 @@ const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
 require('dotenv').config();
 const say = require('say');
+const {chessDotComSquareToPGN} = require("./src/chess_dot_com_utils");
 const {PIECE_NOTATION_TO_NAME} = require("./src/constants");
 const {squareObjectToPGN} = require("./src/chess_dot_com_utils");
 const {squareObjectToChessDotCom} = require("./src/chess_dot_com_utils");
 const {BoardManager} = require("./src/board_manager");
-const {chessDotComSquareToPGN} = require("./src/chess_dot_com_utils");
 const {PageManager} = require("./src/page_manager");
 const {GameManager} = require("./src/game_manager");
 const {parsePieceAndSquareFromClass} = require("./src/chess_dot_com_utils");
@@ -54,15 +54,17 @@ const main = async () => {
             // Piece captured
             const pieceData = parsePieceAndSquareFromClass(oldValue.class);
             if (pieceData) {
+                gameManager.setLastPieceRemoved(pieceData);
                 await evaluateAndListen(false, false, true, WHITE, BLACK); // Refresh piece listeners
                 await pageManager.onChessDotComBoardChange();
                 await boardManager.getBoard();
             }
         }
         if (!oldValue) {
-            // Piece captured
+            // Piece promoted
             const pieceData = parsePieceAndSquareFromClass(newValue);
             if (pieceData) {
+                // lastPieceRemoved = pieceData;
                 await evaluateAndListen(false, false, true, WHITE, BLACK); // Refresh piece listeners
                 await pageManager.onChessDotComBoardChange();
                 await boardManager.getBoard();
@@ -79,7 +81,18 @@ const main = async () => {
             attributeChanged === 'class' &&
             originalSquare !== squareObjectToChessDotCom(pieceInfo) &&
             oldValue.indexOf('dragging') === -1) {
-            say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} to ${squareObjectToPGN(pieceInfo)}`);
+            setTimeout(() => {
+                if (gameManager.lastPieceRemoved) {
+                    if (gameManager.lastPiecePossibleCaptures.find((capture) => capture.type === pieceInfo.type)) {
+                        say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} ${chessDotComSquareToPGN(originalSquare)} takes ${squareObjectToPGN(pieceInfo)}`);
+                    } else {
+                        say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} takes ${squareObjectToPGN(pieceInfo)}`);
+                    }
+                } else {
+                    say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} to ${squareObjectToPGN(pieceInfo)}`);
+                }
+                gameManager.setLastPieceRemoved(undefined);
+            }, 750);
             await pageManager.onChessDotComBoardChange();
             await boardManager.getBoard();
         }
