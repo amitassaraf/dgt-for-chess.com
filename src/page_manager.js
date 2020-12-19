@@ -7,8 +7,11 @@ const {chessDotComToSquareObject} = require("./chess_dot_com_utils");
 const {getBoardOnChessDotCom} = require("./chess_dot_com_utils");
 const {BLACK} = require('chess.js')
 const say = require('say');
+const {setupFromFen} = require("../livechess");
+const {sendMessage} = require("../livechess");
 const {squareObjectToChessDotCom} = require("./chess_dot_com_utils");
 const {Chess} = require('chess.js')
+const _ = require('lodash');
 
 class PageManager {
     constructor(page, game_manager) {
@@ -17,11 +20,13 @@ class PageManager {
         this.game_manager = game_manager
     }
 
-    onChessDotComBoardChange = async () => {
+    onChessDotComBoardChange = _.throttle(async () => {
         await this.synchronizeBoard();
         this.isBoardInSync = false;
         console.log('Board not synced.');
-    }
+        console.log(`${getFenWithoutAttributes(this.game_manager.getFen())} ${this.game_manager.getFenAttributes()}`);
+        sendMessage(setupFromFen(`${getFenWithoutAttributes(this.game_manager.getFen())} ${this.game_manager.getFenAttributes()}`));
+    }, 500);
 
     synchronizeBoard = async () => {
         const chessDotComBoard = await getBoardOnChessDotCom(this.page);

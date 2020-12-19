@@ -3,7 +3,7 @@ module.exports = {
         CHESS_BOARD: "CHESS-BOARD"
     },
     DEFAULT_CASTLING_RIGHTS: 'KQkq',
-    DEFAULT_EN_PASSANT: 'KQkq',
+    DEFAULT_EN_PASSANT: '-',
     LIVE_CHESS: {
         HOSTNAME: '127.0.0.1',
         PORT: 1982,

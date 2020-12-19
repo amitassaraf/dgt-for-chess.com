@@ -24,6 +24,7 @@
     "babel-preset-electron": "^1.4.15",
     "chess.js": "^0.11.0",
     "dotenv": "^8.2.0",
+    "lodash": "^4.17.20",
     "puppeteer-core": "^5.5.0",
     "puppeteer-in-electron": "^3.0.3",
     "say": "^0.16.0",
