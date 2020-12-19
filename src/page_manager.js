@@ -5,13 +5,11 @@ const {getFenWithoutAttributes} = require("./chess_utils");
 const {COLUMNS, ROWS} = require("./constants");
 const {chessDotComToSquareObject} = require("./chess_dot_com_utils");
 const {getBoardOnChessDotCom} = require("./chess_dot_com_utils");
-const {BLACK} = require('chess.js')
 const say = require('say');
-const {setupFromFen} = require("../livechess");
-const {sendMessage} = require("../livechess");
 const {squareObjectToChessDotCom} = require("./chess_dot_com_utils");
 const {Chess} = require('chess.js')
 const _ = require('lodash');
+const {BLACK} = require("./constants");
 
 class PageManager {
     constructor(page, game_manager) {
@@ -24,8 +22,6 @@ class PageManager {
         await this.synchronizeBoard();
         this.isBoardInSync = false;
         console.log('Board not synced.');
-        console.log(`${getFenWithoutAttributes(this.game_manager.getFen())} ${this.game_manager.getFenAttributes()}`);
-        sendMessage(setupFromFen(`${getFenWithoutAttributes(this.game_manager.getFen())} ${this.game_manager.getFenAttributes()}`));
     }, 500);
 
     synchronizeBoard = async () => {
@@ -49,9 +45,9 @@ class PageManager {
 
         if (this.isBoardInSync) {
             for (let move of moves) {
-                let legalMove = isLegalMove(this.game_manager.getFen(), move.from, move.to);
+                let legalMove = isLegalMove(`${getFenWithoutAttributes(this.game_manager.getFen())} ${this.game_manager.getFenAttributes(this.game_manager.playerColor)}`, move.from, move.to);
                 if (isPromotion(move.color, move.type, move.to)) {
-                    legalMove = isLegalMove(this.game_manager.getFen(), move.from, move.to, true);
+                    legalMove = isLegalMove(`${getFenWithoutAttributes(this.game_manager.getFen())} ${this.game_manager.getFenAttributes(this.game_manager.playerColor)}`, move.from, move.to, true);
                 }
                 if (!legalMove) {
                     if (move.color !== this.game_manager.getTurn()) {

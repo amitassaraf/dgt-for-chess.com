@@ -1,11 +1,12 @@
-const {TAGS} = require('./src/constants');
-const {connect} = require('./livechess');
+const {TAGS, BLACK, WHITE} = require('./src/constants');
 const {BrowserWindow, app} = require("electron");
 const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
 require('dotenv').config();
-const {BLACK, WHiTE} = require('chess.js')
 const say = require('say');
+const {squareObjectToPGN} = require("./src/chess_dot_com_utils");
+const {squareObjectToChessDotCom} = require("./src/chess_dot_com_utils");
+const {BoardManager} = require("./src/board_manager");
 const {chessDotComSquareToPGN} = require("./src/chess_dot_com_utils");
 const {PageManager} = require("./src/page_manager");
 const {GameManager} = require("./src/game_manager");
@@ -40,51 +41,59 @@ const main = async () => {
     await page.waitForSelector('chess-board');
 
     const pageManager = new PageManager(page, gameManager);
+    const boardManager = new BoardManager(pageManager.onPhysicalBoardChange);
+    boardManager.spawn();
 
+    async function setPlayerColor(color) {
+        gameManager.setPlayerColor(color);
+    }
 
     async function onPieceRemovedOrAdded(oldValue, newValue) {
         if (!newValue) {
             // Piece captured
             const pieceData = parsePieceAndSquareFromClass(oldValue.class);
             if (pieceData) {
-                await evaluateAndListen(false, false, true); // Refresh piece listeners
+                await evaluateAndListen(false, false, true, WHITE, BLACK); // Refresh piece listeners
                 await pageManager.onChessDotComBoardChange();
+                await boardManager.getBoard();
             }
         }
         if (!oldValue) {
             // Piece captured
             const pieceData = parsePieceAndSquareFromClass(newValue);
             if (pieceData) {
-                await evaluateAndListen(false, false, true); // Refresh piece listeners
+                await evaluateAndListen(false, false, true, WHITE, BLACK); // Refresh piece listeners
                 await pageManager.onChessDotComBoardChange();
+                await boardManager.getBoard();
             }
         }
 
     }
 
     async function onPieceMoved(pieceData, attributeChanged, oldValue, newValue) {
-        const {pieceType, square} = parsePieceAndSquareFromClass(pieceData)
+        const pieceInfo = parsePieceAndSquareFromClass(pieceData.class)
         const originalSquare = /square-([0-9]+)/g.exec(oldValue)[1];
-        if (pieceType &&
+        if (pieceInfo &&
             originalSquare &&
-            square &&
             attributeChanged === 'class' &&
-            originalSquare !== square &&
+            originalSquare !== squareObjectToChessDotCom(pieceInfo) &&
             oldValue.indexOf('dragging') === -1) {
-            say.speak(`${chessDotComSquareToPGN(square)}`);
+            say.speak(`${squareObjectToPGN(pieceInfo)}`);
             await pageManager.onChessDotComBoardChange();
+            await boardManager.getBoard();
         }
     }
 
     async function onChessboardChange(oldValue, newValue) {
         if (oldValue.tag === TAGS.CHESS_BOARD) {
-            await evaluateAndListen(false, true, true);
+            await evaluateAndListen(false, true, true, WHITE, BLACK);
             await pageManager.onChessDotComBoardChange();
+            await boardManager.getBoard();
         }
     }
 
-    const evaluateAndListen = async (initial, board, pieces) => {
-        await page.evaluate((initial, board, pieces, COLOR) => {
+    const evaluateAndListen = async (initial, board, pieces, WHITE, BLACK) => {
+        await page.evaluate((initial, board, pieces, WHITE, BLACK) => {
             const getNodeData = (node) => {
                 return {
                     'class': node.getAttribute('class'),
@@ -96,9 +105,9 @@ const main = async () => {
             if (board) {
                 const targetNode = document.querySelector('chess-board');
                 if (targetNode.classList.contains('flipped')) {
-                    window.setPlayerColor(COLOR.BLACK);
+                    window.setPlayerColor(BLACK);
                 } else {
-                    window.setPlayerColor(COLOR.WHITE);
+                    window.setPlayerColor(WHITE);
                 }
 
                 if (document.boardObserver) {
@@ -114,9 +123,9 @@ const main = async () => {
                             );
                         } else if (mutation.type === 'attributes') {
                             if (mutation.target.classList.contains('flipped')) {
-                                window.setPlayerColor(COLOR.BLACK, targetNode.classList);
+                                window.setPlayerColor(BLACK);
                             } else {
-                                window.setPlayerColor(COLOR.WHITE, targetNode.classList);
+                                window.setPlayerColor(WHITE);
                             }
                         }
 
@@ -189,17 +198,15 @@ const main = async () => {
             }
 
 
-        }, initial, board, pieces, {BLACK, WHiTE});
+        }, initial, board, pieces, WHITE, BLACK);
     }
 
     await page.exposeFunction('onChessboardChange', onChessboardChange);
     await page.exposeFunction('onPieceRemovedOrAdded', onPieceRemovedOrAdded);
     await page.exposeFunction('onPieceMoved', onPieceMoved);
-    await page.exposeFunction('setPlayerColor', gameManager.setPlayerColor);
+    await page.exposeFunction('setPlayerColor', setPlayerColor);
 
-    await evaluateAndListen(true, true, true);
-
-    connect(pageManager.onPhysicalBoardChange);
+    await evaluateAndListen(true, true, true, WHITE, BLACK);
 
     // window.destroy();
 };

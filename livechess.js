@@ -14,7 +14,7 @@ const setupFromFen = (fen) => JSON.stringify({
     "id": messageId++,
     "call": "call",
     "param": {
-        "id": 7,
+        "id": messageId++,
         "method": "setup",
         "param": {
             "fen": fen

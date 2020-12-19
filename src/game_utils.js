@@ -1,7 +1,6 @@
 const {squareObjectToPGN} = require("./chess_dot_com_utils");
-const {ROWS, COLUMNS} = require("./constants");
-const {Chess, BLACK, WHITE, PAWN, QUEEN} = require('chess.js')
-
+const {ROWS, COLUMNS, BLACK, WHITE, PAWN, QUEEN} = require("./constants");
+const {Chess} = require('chess.js');
 
 const isLegalMove = (position, from, to, promotion) => {
     return !!new Chess(position).move({

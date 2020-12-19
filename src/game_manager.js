@@ -1,5 +1,5 @@
-const {Chess, WHITE, BLACK} = require('chess.js')
-const {DEFAULT_CASTLING_RIGHTS, DEFAULT_EN_PASSANT} = require('./constants');
+const {Chess} = require('chess.js')
+const {DEFAULT_CASTLING_RIGHTS, DEFAULT_EN_PASSANT, WHITE, BLACK} = require('./constants');
 
 
 class GameManager {
@@ -10,7 +10,7 @@ class GameManager {
         this.enPassant = DEFAULT_EN_PASSANT;
     }
 
-    setPlayerColor = async (color) => {
+    setPlayerColor = (color) => {
         if ([WHITE, BLACK].indexOf(color) === -1) {
             throw Error(`Invalid color ${color}`);
         }
@@ -22,7 +22,7 @@ class GameManager {
     }
 
     getFenAttributes = (turnOverride = undefined) => {
-        if (!turnOverride) {
+        if (turnOverride === undefined) {
             turnOverride = this.chessBoard.turn();
         }
         return `${turnOverride} ${this.castlingRights} ${this.enPassant} ${0} ${this.chessBoard.history().length + 1}`

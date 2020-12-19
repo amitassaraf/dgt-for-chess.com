@@ -21,4 +21,8 @@ module.exports = {
     },
     ROWS: 8,
     COLUMNS: 8,
+    BLACK: 'b',
+    WHITE: 'w',
+    PAWN: 'p',
+    QUEEN: 'q'
 }
