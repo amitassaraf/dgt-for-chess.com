@@ -9,7 +9,7 @@ const say = require('say');
 const {squareObjectToChessDotCom} = require("./chess_dot_com_utils");
 const {Chess} = require('chess.js')
 const _ = require('lodash');
-const {BLACK, DEFAULT_POSITION} = require("./constants");
+const {BLACK} = require("./constants");
 
 class PageManager {
     constructor(page, game_manager) {
@@ -22,14 +22,11 @@ class PageManager {
         await this.synchronizeBoard();
         this.isBoardInSync = false;
         console.log('Board not synced.');
-    }, 750, { 'trailing': false });
+    }, 750, {'trailing': false});
 
     synchronizeBoard = async () => {
         const chessDotComBoard = await getBoardOnChessDotCom(this.page);
-        this.game_manager.loadFen(chessDotComBoard.fen());
-        if (getFenWithoutAttributes(this.game_manager.getFen()) === DEFAULT_POSITION) {
-            this.game_manager.setLastPieceRemoved(null);
-        }
+        this.game_manager.loadFen(`${getFenWithoutAttributes(chessDotComBoard.fen())} ${this.game_manager.getFenAttributes()}`, true);
     }
 
     onPhysicalBoardChange = async (currentFen) => {
@@ -40,7 +37,7 @@ class PageManager {
 
         if (getFenWithoutAttributes(chessDotComBoard.fen()) === getFenWithoutAttributes(physicalBoard.fen())) {
             this.isBoardInSync = true;
-            this.game_manager.loadFen(`${currentFen} ${this.game_manager.getFenAttributes(this.game_manager.playerColor)}`)
+            this.game_manager.loadFen(`${currentFen} ${this.game_manager.getFenAttributes(this.game_manager.playerColor)}`, false);
             console.log('Board synced.');
         }
 

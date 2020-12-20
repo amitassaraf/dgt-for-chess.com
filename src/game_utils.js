@@ -57,10 +57,22 @@ const getMovesMadeByComparingChessBoard = (originalBoard, newBoard) => {
         for (let column = 0; column < COLUMNS; column++) {
             if (newBoardArray[row][column] !== null && originalBoardArray[row][column] === null) {
                 /// In-case a piece moved to a new spot
+                let from = findRowAndColumnForPiece(originalBoardArray, newBoardArray, newBoardArray[row][column]);
+                if (!from && (((ROWS - row) === 1 && newBoardArray[row][column].color === BLACK) || ((ROWS - row) === 8 && newBoardArray[row][column].color === WHITE))) {
+                    /// Promotion, look for missing pawn
+                    from = findRowAndColumnForPiece(originalBoardArray, newBoardArray, {...newBoardArray[row][column], type: PAWN});
+                    newMoves.push({
+                        ...newBoardArray[row][column],
+                        type: PAWN,
+                        to: {column: column + 1, row: ROWS - row},
+                        from: from,
+                        promotion: newBoardArray[row][column].type
+                    })
+                }
                 newMoves.push({
                     ...newBoardArray[row][column],
                     to: {column: column + 1, row: ROWS - row},
-                    from: findRowAndColumnForPiece(originalBoardArray, newBoardArray, newBoardArray[row][column])
+                    from: from
                 });
             } else if (originalBoardArray[row][column] !== null &&
                 newBoardArray[row][column] !== null &&

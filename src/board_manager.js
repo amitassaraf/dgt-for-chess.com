@@ -5,10 +5,9 @@ const _ = require('lodash');
 
 
 class BoardManager {
-    constructor(boardCallback, gameManager) {
+    constructor(boardCallback) {
         this.boardConnected = false;
         this.boardCallback = boardCallback
-        this.gameManager = gameManager
         this.process = undefined;
         this.ws = undefined;
     }
@@ -25,7 +24,6 @@ class BoardManager {
                         this.boardConnected = message.status !== 'disconnected';
                         console.log('Board connected.');
                         this.ws = new WebSocket(`ws://${BOARD_WEBSOCKET.HOSTNAME}:${BOARD_WEBSOCKET.PORT}/`);
-                        this.gameManager.setLastPieceRemoved(null);
                         break;
                     case 'board':
                         this.boardCallback && this.boardCallback(message.fen);
