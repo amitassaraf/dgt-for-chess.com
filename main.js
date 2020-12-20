@@ -4,6 +4,7 @@ const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
 require('dotenv').config();
 const say = require('say');
+const {chessDotComToSquareObject} = require("./src/chess_dot_com_utils");
 const {chessDotComSquareToPGN} = require("./src/chess_dot_com_utils");
 const {PIECE_NOTATION_TO_NAME} = require("./src/constants");
 const {squareObjectToPGN} = require("./src/chess_dot_com_utils");
@@ -47,6 +48,7 @@ const main = async () => {
 
     async function setPlayerColor(color) {
         gameManager.setPlayerColor(color);
+        gameManager.setLastPieceRemoved(null);
         await pageManager.onChessDotComBoardChange();
         await boardManager.getBoard();
     }
@@ -85,7 +87,9 @@ const main = async () => {
             oldValue.indexOf('dragging') === -1) {
             setTimeout(() => {
                 if (gameManager.lastPieceRemoved) {
-                    if (gameManager.lastPiecePossibleCaptures.find((capture) => capture.type === pieceInfo.type)) {
+                    const originalSquareObject = chessDotComToSquareObject(originalSquare);
+                    if (gameManager.lastPiecePossibleCaptures.findIndex((capture) => capture.type === pieceInfo.type
+                        && !(capture.column == originalSquareObject.column && capture.row == originalSquareObject.row)) !== -1) {
                         say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} ${chessDotComSquareToPGN(originalSquare)} takes ${squareObjectToPGN(pieceInfo)}`);
                     } else {
                         say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} takes ${squareObjectToPGN(pieceInfo)}`);
@@ -94,7 +98,7 @@ const main = async () => {
                     say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} to ${squareObjectToPGN(pieceInfo)}`);
                 }
                 gameManager.setLastPieceRemoved(null);
-            }, 750);
+            }, 500);
             await pageManager.onChessDotComBoardChange();
             await boardManager.getBoard();
         }

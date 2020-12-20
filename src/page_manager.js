@@ -9,7 +9,7 @@ const say = require('say');
 const {squareObjectToChessDotCom} = require("./chess_dot_com_utils");
 const {Chess} = require('chess.js')
 const _ = require('lodash');
-const {BLACK} = require("./constants");
+const {BLACK, DEFAULT_POSITION} = require("./constants");
 
 class PageManager {
     constructor(page, game_manager) {
@@ -27,6 +27,9 @@ class PageManager {
     synchronizeBoard = async () => {
         const chessDotComBoard = await getBoardOnChessDotCom(this.page);
         this.game_manager.loadFen(chessDotComBoard.fen());
+        if (getFenWithoutAttributes(this.game_manager.getFen()) === DEFAULT_POSITION) {
+            this.game_manager.setLastPieceRemoved(null);
+        }
     }
 
     onPhysicalBoardChange = async (currentFen) => {

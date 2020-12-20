@@ -8,6 +8,7 @@ module.exports = {
         HOSTNAME: '127.0.0.1',
         PORT: 9991,
     },
+    DEFAULT_POSITION: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
     COLUMN_TO_LETTER: {
         1: 'a',
         2: 'b',

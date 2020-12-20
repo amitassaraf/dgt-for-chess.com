@@ -65,6 +65,7 @@ class GameManager {
         this.lastPieceRemoved = piece;
         if (piece) {
             this.lastPiecePossibleCaptures = findPossibleCaptures(`${getFenWithoutAttributes(this.getFen())} ${this.getFenAttributes()}`, this.chessBoard.board(), piece);
+            console.log(this.lastPiecePossibleCaptures);
         } else {
             this.lastPiecePossibleCaptures = [];
         }
