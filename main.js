@@ -82,7 +82,7 @@ const main = async () => {
             originalSquare !== squareObjectToChessDotCom(pieceInfo) &&
             oldValue.indexOf('dragging') === -1) {
             setTimeout(() => {
-                if (gameManager.lastPieceRemoved) {
+                if (!!gameManager.lastPieceRemoved) {
                     if (gameManager.lastPiecePossibleCaptures.find((capture) => capture.type === pieceInfo.type)) {
                         say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} ${chessDotComSquareToPGN(originalSquare)} takes ${squareObjectToPGN(pieceInfo)}`);
                     } else {
@@ -91,7 +91,7 @@ const main = async () => {
                 } else {
                     say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} to ${squareObjectToPGN(pieceInfo)}`);
                 }
-                gameManager.setLastPieceRemoved(undefined);
+                gameManager.setLastPieceRemoved(null);
             }, 750);
             await pageManager.onChessDotComBoardChange();
             await boardManager.getBoard();

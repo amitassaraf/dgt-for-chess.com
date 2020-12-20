@@ -24,8 +24,8 @@ class BoardManager {
                     case 'connection':
                         this.boardConnected = message.status !== 'disconnected';
                         console.log('Board connected.');
-                        this.gameManager.setLastPieceRemoved(undefined);
                         this.ws = new WebSocket(`ws://${BOARD_WEBSOCKET.HOSTNAME}:${BOARD_WEBSOCKET.PORT}/`);
+                        this.gameManager.setLastPieceRemoved(null);
                         break;
                     case 'board':
                         this.boardCallback && this.boardCallback(message.fen);
@@ -43,7 +43,7 @@ class BoardManager {
         if (this.boardConnected && this.ws) {
             this.ws.send('get_board');
         }
-    }, 750, {'trailing': false});
+    }, 500, {'trailing': false});
 }
 
 module.exports = {

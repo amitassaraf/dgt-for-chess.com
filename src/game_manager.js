@@ -62,7 +62,7 @@ class GameManager {
 
     setLastPieceRemoved = (piece) => {
         this.lastPieceRemoved = piece;
-        if (piece) {
+        if (!!piece) {
             this.lastPiecePossibleCaptures = findPossibleCaptures(this.chessBoard, piece);
         } else {
             this.lastPiecePossibleCaptures = [];
