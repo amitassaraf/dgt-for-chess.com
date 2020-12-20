@@ -1,6 +1,7 @@
 const {Chess} = require('chess.js')
 const {DEFAULT_CASTLING_RIGHTS, DEFAULT_EN_PASSANT, WHITE, BLACK} = require('./constants');
 const say = require('say');
+const {getFenWithoutAttributes} = require("./chess_utils");
 const {findPossibleCaptures} = require("./game_utils");
 
 
@@ -10,7 +11,7 @@ class GameManager {
         this.playerColor = playerColor;
         this.castlingRights = DEFAULT_CASTLING_RIGHTS;
         this.enPassant = DEFAULT_EN_PASSANT;
-        this.lastPieceRemoved = undefined;
+        this.lastPieceRemoved = null;
         this.lastPiecePossibleCaptures = [];
     }
 
@@ -62,8 +63,8 @@ class GameManager {
 
     setLastPieceRemoved = (piece) => {
         this.lastPieceRemoved = piece;
-        if (!!piece) {
-            this.lastPiecePossibleCaptures = findPossibleCaptures(this.chessBoard, piece);
+        if (piece) {
+            this.lastPiecePossibleCaptures = findPossibleCaptures(`${getFenWithoutAttributes(this.getFen())} ${this.getFenAttributes()}`, this.chessBoard.board(), piece);
         } else {
             this.lastPiecePossibleCaptures = [];
         }

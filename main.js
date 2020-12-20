@@ -47,6 +47,8 @@ const main = async () => {
 
     async function setPlayerColor(color) {
         gameManager.setPlayerColor(color);
+        await pageManager.onChessDotComBoardChange();
+        await boardManager.getBoard();
     }
 
     async function onPieceRemovedOrAdded(oldValue, newValue) {
@@ -82,7 +84,7 @@ const main = async () => {
             originalSquare !== squareObjectToChessDotCom(pieceInfo) &&
             oldValue.indexOf('dragging') === -1) {
             setTimeout(() => {
-                if (!!gameManager.lastPieceRemoved) {
+                if (gameManager.lastPieceRemoved) {
                     if (gameManager.lastPiecePossibleCaptures.find((capture) => capture.type === pieceInfo.type)) {
                         say.speak(`${PIECE_NOTATION_TO_NAME[pieceInfo.type]} ${chessDotComSquareToPGN(originalSquare)} takes ${squareObjectToPGN(pieceInfo)}`);
                     } else {

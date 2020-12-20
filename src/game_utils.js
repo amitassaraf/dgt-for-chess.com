@@ -29,16 +29,17 @@ const findRowAndColumnForPiece = (originalBoard, newBoard, piece) => {
     }
 }
 
-const findPossibleCaptures = (board, piece) => {
+const findPossibleCaptures = (fen, board, piece) => {
     const captures = [];
     for (let row = 0; row < ROWS; row++) {
         for (let column = 0; column < COLUMNS; column++) {
             if (board[row][column] &&
                 board[row][column].color !== piece.color) {
-                if (isLegalMove(board.fen(), {
+                const promotion = isPromotion(board[row][column].color, board[row][column].type, piece);
+                if (isLegalMove(fen, {
                     column: column + 1,
                     row: ROWS - row
-                }, piece, isPromotion(board[row][column].color, board[row][column].type, piece))) {
+                }, piece, promotion)) {
                     captures.push({...board[row][column], column: column + 1, row: ROWS - row});
                 }
             }
