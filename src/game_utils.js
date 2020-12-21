@@ -69,11 +69,22 @@ const getMovesMadeByComparingChessBoard = (originalBoard, newBoard) => {
                         promotion: newBoardArray[row][column].type
                     })
                 }
-                newMoves.push({
-                    ...newBoardArray[row][column],
-                    to: {column: column + 1, row: ROWS - row},
-                    from: from
-                });
+
+                if (newBoardArray[row][column] === PAWN && from && column + 1 !== from.column) {
+                    // Enpassant
+                    newMoves.push({
+                        ...newBoardArray[row][column],
+                        to: {column: column + 1, row: ROWS - row},
+                        from: from,
+                        enpassant: true
+                    });
+                } else {
+                    newMoves.push({
+                        ...newBoardArray[row][column],
+                        to: {column: column + 1, row: ROWS - row},
+                        from: from
+                    });
+                }
             } else if (originalBoardArray[row][column] !== null &&
                 newBoardArray[row][column] !== null &&
                 (originalBoardArray[row][column].type !== newBoardArray[row][column].type || originalBoardArray[row][column].color !== newBoardArray[row][column].color)) {

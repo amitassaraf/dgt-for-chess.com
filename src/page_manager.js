@@ -25,22 +25,26 @@ class PageManager {
     }, 750, {'trailing': false});
 
     synchronizeBoard = async () => {
-        const chessDotComBoard = await getBoardOnChessDotCom(this.page);
-        this.game_manager.loadFen(`${getFenWithoutAttributes(chessDotComBoard.fen())} ${this.game_manager.getFenAttributes()}`, true);
+        try {
+            const chessDotComBoard = await getBoardOnChessDotCom(this.page);
+            this.game_manager.loadFen(`${getFenWithoutAttributes(chessDotComBoard.fen())} ${this.game_manager.getFenAttributes(undefined, '-')}`, true);
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     onPhysicalBoardChange = async (currentFen) => {
         const chessDotComBoard = await getBoardOnChessDotCom(this.page);
 
         const physicalBoard = new Chess();
-        physicalBoard.load(`${currentFen} ${this.game_manager.getFenAttributes()}`);
+        physicalBoard.load(`${currentFen} ${this.game_manager.getFenAttributes(undefined, '-')}`);
 
         if (getFenWithoutAttributes(chessDotComBoard.fen()) === getFenWithoutAttributes(physicalBoard.fen())) {
             this.isBoardInSync = true;
-            this.game_manager.loadFen(`${currentFen} ${this.game_manager.getFenAttributes(this.game_manager.playerColor)}`, false);
+            this.game_manager.loadFen(`${currentFen} ${this.game_manager.getFenAttributes(this.game_manager.playerColor, '-')}`, false);
             console.log('Board synced.');
         }
-
+        
         const moves = getMovesMadeByComparingChessBoard(this.game_manager.chessBoard, physicalBoard);
 
         if (this.isBoardInSync) {
@@ -63,6 +67,7 @@ class PageManager {
             }
         } else {
             console.log('Board is not synced, please sync board.')
+
         }
     }
 

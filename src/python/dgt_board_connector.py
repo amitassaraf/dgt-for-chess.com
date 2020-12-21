@@ -35,6 +35,17 @@ def on_board(board):
     }))
     sys.stdout.flush()
 
+@dgt.on("clock")
+def on_clock(clock):
+    print(json.dumps({
+        "type": "clock",
+        "left_time": clock.left_time,
+        "right_time": clock.right_time,
+        "left_up": clock.left_up,
+    }))
+    sys.stdout.flush()
+
+
 async def simple(websocket, path):
     async for message in websocket:
         if message == 'get_board':
