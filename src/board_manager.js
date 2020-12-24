@@ -37,6 +37,10 @@ class BoardManager {
         console.log('Spawned process.');
     }
 
+    setPhysicalBoardCallback = (callback) => {
+        this.boardCallback = callback;
+    }
+
     getBoard = _.throttle(async () => {
         if (this.boardConnected && this.ws) {
             this.ws.send('get_board');

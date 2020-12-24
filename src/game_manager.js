@@ -4,7 +4,7 @@ const say = require('say');
 const {PAWN} = require("./constants");
 const {parseSan} = require("./chess_utils");
 const {PIECE_NOTATION_TO_NAME} = require("./constants");
-const {squareObjectToPGN} = require("./chess_dot_com_utils");
+const {squareObjectToPGN} = require("./sites/chess.com/utils");
 const {getMovesMadeByComparingChessBoard} = require("./game_utils");
 const {getFenWithoutAttributes} = require("./chess_utils");
 
@@ -18,7 +18,7 @@ class GameManager {
         this.previousFen = null;
     }
 
-    setPlayerColor = (color) => {
+    setPlayerColor = async (color) => {
         if ([WHITE, BLACK].indexOf(color) === -1) {
             throw Error(`Invalid color ${color}`);
         }
@@ -38,12 +38,10 @@ class GameManager {
 
     loadFen = (fen, fromSynchronize) => {
         try {
-            const prevFen = `${getFenWithoutAttributes(this.getFen())} ${this.getFenAttributes(undefined, '-')}`;
             this.chessBoard.clear();
             this.chessBoard.load(fen);
 
-            if (fromSynchronize) {
-                this.previousFen = prevFen;
+            if (fromSynchronize && this.previousFen) {
                 let previousBoard = new Chess(this.previousFen);
                 const moves = getMovesMadeByComparingChessBoard(previousBoard, this.chessBoard);
                 if (moves) {
@@ -59,7 +57,6 @@ class GameManager {
                                 column: move.to.column,
                                 row: diff > 0 ? move.to.row - 1 : move.to.row + 1
                             });
-                            console.log(this.enPassant);
                             this.chessBoard.load(`${getFenWithoutAttributes(fen)} ${this.getFenAttributes()}`)
                         } else {
                             this.enPassant = DEFAULT_EN_PASSANT;

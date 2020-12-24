@@ -1,7 +1,4 @@
 module.exports = {
-    TAGS: {
-        CHESS_BOARD: "CHESS-BOARD"
-    },
     DEFAULT_CASTLING_RIGHTS: 'KQkq',
     DEFAULT_EN_PASSANT: '-',
     BOARD_WEBSOCKET: {

@@ -1,4 +1,4 @@
-const {squareObjectToPGN} = require("./chess_dot_com_utils");
+const {squareObjectToPGN} = require("./sites/chess.com/utils");
 const {ROWS, COLUMNS, BLACK, WHITE, PAWN, QUEEN} = require("./constants");
 const {Chess} = require('chess.js');
 
