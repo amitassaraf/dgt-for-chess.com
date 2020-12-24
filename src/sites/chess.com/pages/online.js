@@ -17,8 +17,9 @@ const parsePieceAndSquareFromClass = (className) => {
 }
 
 
-class ComputerPage extends BasePage {
-    PAGE_SUB_URL = '/play/computer';
+class OnlinePage extends BasePage {
+    PAGE_SUB_URL = '/play/online';
+    ANNOUNCE_REAL_PLAYER_MOVES = false;
 
     waitForPageToLoad = async () => {
         await this.puppeteer.waitForSelector('chess-board');
@@ -44,6 +45,7 @@ class ComputerPage extends BasePage {
                 document.boardObserver.disconnect();
             }
 
+
             document.boardObserver = new MutationObserver(async (mutationsList) => {
                 for (const mutation of mutationsList) {
                     if (mutation.type === 'childList') {
@@ -63,7 +65,7 @@ class ComputerPage extends BasePage {
                         if (mutation.target.classList.contains('flipped') &&
                             (!mutation.oldValue || !mutation.oldValue.contains('flipped')) && playerColor !== 'b') {
                             await window.setPlayerColor('b');
-                        } else if (playerColor !== 'w' && !targetNode.classList.contains('flipped')) {
+                        } else if (playerColor !== 'w' && !mutation.target.classList.contains('flipped')) {
                             await window.setPlayerColor('w');
                         }
                     }
@@ -76,7 +78,6 @@ class ComputerPage extends BasePage {
             );
 
             const pieces = document.querySelectorAll('.piece');
-
             if (document.piecesObserver) {
                 document.piecesObserver.disconnect();
             }
@@ -109,18 +110,18 @@ class ComputerPage extends BasePage {
                 );
             }
 
-            let target = document.querySelector('.layout-board-section');
+            let target = document.querySelector('.board-layout-chessboard');
 
             if (document.globalObserver) {
                 document.globalObserver.disconnect();
             }
 
-            document.globalObserver = new MutationObserver((mutationsList) => {
+            document.globalObserver = new MutationObserver(async (mutationsList) => {
                 for (const mutation of mutationsList) {
                     if (mutation.type === 'childList') {
-                        if (mutation.removedNodes && mutation.removedNodes.tag === 'chess-board') {
-                            window.onBoardChanged();
-                        }
+                        // if (mutation.removedNodes && mutation.removedNodes.tag === 'chess-board') {
+                        window.onBoardChanged();
+                        // }
                     } else if (mutation.type === 'attributes') {
                         window.onBoardChanged();
                     }
@@ -166,5 +167,5 @@ class ComputerPage extends BasePage {
 }
 
 module.exports = {
-    ComputerPage
+    OnlinePage
 }

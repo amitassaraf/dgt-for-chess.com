@@ -3,6 +3,7 @@ const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
 const {ComputerPage} = require("./src/sites/chess.com/pages/computer");
 const {ExplorerPage} = require("./src/sites/chess.com/pages/explorer");
+const {OnlinePage} = require("./src/sites/chess.com/pages/online");
 const {ChessDotCom} = require("./src/sites/chess.com/chess_dot_com");
 const {BoardManager} = require("./src/board_manager");
 const {GameManager} = require("./src/game_manager");
@@ -27,7 +28,7 @@ const main = async () => {
     await siteManager.navigateAndInitialize(browser, window, pie);
     await siteManager.authenticate();
     await siteManager.waitForSiteToBeReady();
-    await siteManager.navigateToGamePage(new ExplorerPage(gameManager, boardManager));
+    await siteManager.navigateToGamePage(new OnlinePage(gameManager, boardManager));
 
 
     // window.destroy();

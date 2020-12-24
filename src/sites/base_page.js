@@ -10,6 +10,7 @@ const {squareObjectToPGN} = require("./chess.com/utils");
 class BasePage {
     PAGE_SUB_URL = null;
     ANALYSIS_PAGE = false;
+    ANNOUNCE_REAL_PLAYER_MOVES = true;
 
     constructor(gameManager, boardManager) {
         this.gameManager = gameManager;
@@ -19,19 +20,19 @@ class BasePage {
         this.boardManager.setPhysicalBoardCallback(this.onPhysicalBoardChange);
     }
 
-    setPlayerColor = async (color) => {
+    setPlayerColor = async (color, withoutBoardChange = false) => {
         await this.gameManager.setPlayerColor(color);
-        console.log('SETTING PLAYER COLOR');
-        console.log(color);
         this.gameManager.previousFen = null;
-        await this.onBoardChanged();
+        if (!withoutBoardChange) {
+            await this.onBoardChanged();
+        }
     }
 
     getPlayerColor = async () => {
         return this.gameManager.playerColor;
     }
 
-    onBoardChanged = _.throttle(async () => {
+    onBoardChanged = async () => {
         try {
             await this.initializeListeners(); // Refresh piece listeners
 
@@ -43,12 +44,12 @@ class BasePage {
         } catch (e) {
             console.error(e);
         }
-    }, 750, {'trailing': false});
+    };
 
     synchronizeBoard = async () => {
         try {
             const chessBoardFromSite = await this.getBoardFromPage();
-            this.gameManager.loadFen(`${getFenWithoutAttributes(chessBoardFromSite.fen())} ${this.gameManager.getFenAttributes(undefined, '-')}`, !this.ANALYSIS_PAGE);
+            this.gameManager.loadFen(`${getFenWithoutAttributes(chessBoardFromSite.fen())} ${this.gameManager.getFenAttributes(undefined, '-')}`, !this.ANALYSIS_PAGE, this.ANNOUNCE_REAL_PLAYER_MOVES);
         } catch (e) {
             console.error(e);
         }
@@ -71,7 +72,7 @@ class BasePage {
                     this.gameManager.previousFen = `${getFenWithoutAttributes(this.gameManager.getFen())} ${this.gameManager.getFenAttributes()}`;
                 }
 
-                this.gameManager.loadFen(`${currentFen} ${this.gameManager.getFenAttributes(this.ANALYSIS_PAGE ? undefined : this.gameManager.playerColor, '-')}`, this.ANALYSIS_PAGE);
+                this.gameManager.loadFen(`${currentFen} ${this.gameManager.getFenAttributes(this.ANALYSIS_PAGE ? undefined : this.gameManager.playerColor, '-')}`, this.ANALYSIS_PAGE, this.ANNOUNCE_REAL_PLAYER_MOVES);
                 console.log('Board synced.');
             }
 

@@ -36,7 +36,7 @@ class GameManager {
         return `${turnOverride} ${this.castlingRights} ${enPassantOverride ? enPassantOverride : this.enPassant} ${0} ${this.chessBoard.history().length + 1}`
     }
 
-    loadFen = (fen, fromSynchronize) => {
+    loadFen = (fen, fromSynchronize, announceRealPlayerMoves = true) => {
         try {
             this.chessBoard.clear();
             this.chessBoard.load(fen);
@@ -67,7 +67,7 @@ class GameManager {
                             from: squareObjectToPGN(move.from),
                             promotion: move.promotion
                         });
-                        if (moveResult) {
+                        if (moveResult && (move.color !== this.playerColor || announceRealPlayerMoves)) {
                             const parsedSan = parseSan(moveResult.san);
                             if (parsedSan.capture) {
                                 if (parsedSan.fromOrTo) {
