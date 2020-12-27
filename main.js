@@ -25,7 +25,12 @@ const main = async () => {
 
     const window = new BrowserWindow({
         width: WINDOW_WIDTH,
-        height: WINDOW_HEIGHT
+        height: WINDOW_HEIGHT,
+        title: 'DGT For Chess'
+    });
+
+    window.on('page-title-updated', (evt) => {
+        evt.preventDefault();
     });
 
     const widgetManager = new WidgetManager(window);

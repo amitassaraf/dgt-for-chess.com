@@ -47,7 +47,7 @@ const BoardStatusCard = ({}) => {
             </div>
             <div style={{flexDirection: 'row', display: 'flex', alignItems: 'center'}}>
                 <Text color="muted">To move:&nbsp;</Text>
-                <Badge color="neutral" isSolid={turn === WHITE}>{turn === WHITE ? 'WHITE' : 'BLACK'}</Badge>
+                <Badge color="neutral" isSolid={turn !== WHITE}>{turn === WHITE ? 'WHITE' : 'BLACK'}</Badge>
             </div>
             <div style={{flexDirection: 'row', display: 'flex', alignItems: 'center'}}>
                 <Text color="muted">Battery:&nbsp; {battery}</Text>
