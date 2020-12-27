@@ -1,24 +1,29 @@
 {
-  "name": "electron-quick-start",
+  "name": "dgt-for-chess-dot-com",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "An app to allow playing on Chess.com with a DGT board",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "react-start": "craco start",
     "react-build": "craco build",
     "react-eject": "react-scripts eject",
-    "ebuild": "npm run build && node_modules/.bin/build",
+    "ebuild": "npm run react-build && node_modules/.bin/build",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "dev": "concurrently \"yarn react-start\" \"wait-on http://localhost:3000 && electron .\""
   },
+  "build": {
+    "appId": "com.amitassaraf.dgtchess"
+  },
   "homepage": "./",
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/amitassaraf/dgt-for-chess.com",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "eboard",
+    "smartboard",
+    "chess.com",
+    "chess",
+    "dgt"
   ],
   "eslintConfig": {
     "extends": [
@@ -26,7 +31,7 @@
       "react-app/jest"
     ]
   },
-  "author": "GitHub",
+  "author": "Amit Assaraf",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^11.1.0",
