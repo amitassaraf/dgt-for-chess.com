@@ -1,6 +1,7 @@
 const {BrowserWindow, app} = require("electron");
 const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
+const {ipcMain} = require('electron');
 const {WINDOW_HEIGHT} = require("./src/constants");
 const {WINDOW_WIDTH} = require("./src/constants");
 const {ComputerPage} = require("./src/sites/chess.com/pages/computer");
@@ -12,16 +13,16 @@ const {LiveChessBoardManager} = require("./src/board/livechess");
 const {GameManager} = require("./src/game_manager");
 const {WidgetManager} = require("./src/views/widget_manager");
 require('dotenv').config();
+const _ = require('lodash');
 
 
 const main = async () => {
     await pie.initialize(app);
     const browser = await pie.connect(app, puppeteer);
     const gameManager = new GameManager();
-    const boardManager = new DGTAsyncBoardManager();
+    let boardManager;
     const siteManager = new ChessDotCom();
 
-    boardManager.spawn();
 
     const window = new BrowserWindow({
         width: WINDOW_WIDTH,
@@ -34,18 +35,41 @@ const main = async () => {
     });
 
     const widgetManager = new WidgetManager(window);
-    widgetManager.setup();
 
-    // window.webContents.openDevTools();
+
+    widgetManager.createView('select_connection', WINDOW_WIDTH / 2 - 250, WINDOW_HEIGHT / 2 - 250, 500, 500);
+
+    ipcMain.on('conType', (event, args) => {
+        if (args === 'livechess') {
+            boardManager = new LiveChessBoardManager();
+        } else {
+            boardManager = new DGTAsyncBoardManager();
+        }
+
+        boardManager.spawn();
+
+        widgetManager.resetView();
+    })
 
     await siteManager.navigateAndInitialize(browser, window, pie);
     await siteManager.authenticate();
     await siteManager.waitForSiteToBeReady();
-    await siteManager.navigateToGamePage(new ComputerPage(widgetManager, gameManager, boardManager));
+
+    const GAME_MODES = [ExplorerPage, ComputerPage, OnlinePage];
+
+    await siteManager.puppeteer.setDefaultNavigationTimeout(0);
+
+    while (!_.some(GAME_MODES.map((page) => siteManager.puppeteer.url().endsWith(new page().PAGE_SUB_URL)))) {
+        await siteManager.puppeteer.waitForNavigation();
+    }
+
+    // Game Mode Detected
+    const Page = GAME_MODES.filter((page) => siteManager.puppeteer.url().endsWith(new page().PAGE_SUB_URL))[0];
+    widgetManager.createView('status_card', WINDOW_WIDTH - 310, WINDOW_HEIGHT - 110, 300, 100);
+    await siteManager.navigateToGamePage(new Page(widgetManager, gameManager, boardManager));
+    await widgetManager.updateWidgetDetails(siteManager.currentGamePage, gameManager, boardManager);
 
 
-
-    // window.destroy();
 };
 
 main();

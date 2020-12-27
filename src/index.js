@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import BoardStatusCard from "./views/components/BoardStatusCard";
+import Main from "./views/components/Main";
 
 ReactDOM.render(
   <React.StrictMode>
-    <BoardStatusCard />
+    <Main />
   </React.StrictMode>,
   document.getElementById('root')
 );

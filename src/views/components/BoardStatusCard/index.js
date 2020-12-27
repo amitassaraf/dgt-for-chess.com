@@ -13,16 +13,16 @@ const BOARD_STATUS_TO_COLOR = {
 const BoardStatusCard = ({}) => {
     const [battery, setBattery] = useState(undefined);
     const [boardStatus, setConnectionStatus] = useState(BOARD_STATUS.DISCONNECTED);
-    const [turn, setTurn] = useState(WHITE);
+    const [inSync, setInSync] = useState(false);
 
     useEffect(() => {
         ipcRenderer.on('battery', (event, arg) => {
             const data = JSON.parse(arg);
             setBattery(data.status);
         });
-        ipcRenderer.on('turn', (event, arg) => {
+        ipcRenderer.on('sync', (event, arg) => {
             const data = JSON.parse(arg);
-            setTurn(data.turn);
+            setInSync(data.sync);
         });
         ipcRenderer.on('connection', (event, arg) => {
             const data = JSON.parse(arg);
@@ -46,8 +46,8 @@ const BoardStatusCard = ({}) => {
                 <Badge color={BOARD_STATUS_TO_COLOR[boardStatus]}>{boardStatus}</Badge>
             </div>
             <div style={{flexDirection: 'row', display: 'flex', alignItems: 'center'}}>
-                <Text color="muted">To move:&nbsp;</Text>
-                <Badge color="neutral" isSolid={turn !== WHITE}>{turn === WHITE ? 'WHITE' : 'BLACK'}</Badge>
+                <Text color="muted">Sync:&nbsp;</Text>
+                <Badge color="neutral" isSolid={!inSync}>{inSync ? 'Board Synced.' : 'Out of sync.'}</Badge>
             </div>
             <div style={{flexDirection: 'row', display: 'flex', alignItems: 'center'}}>
                 <Text color="muted">Battery:&nbsp; {battery}</Text>

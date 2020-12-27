@@ -18,10 +18,12 @@ class BasePage {
         this.widgetManager = widgetManager;
         this.isBoardInSync = false;
         this.puppeteer = undefined;
-        this.boardManager.setPhysicalBoardCallback(async (fen) => {
-            await this.onPhysicalBoardChange(fen);
-            await this.widgetManager.updateWidgetDetails(this.gameManager, this.boardManager);
-        });
+        if (this.boardManager) {
+            this.boardManager.setPhysicalBoardCallback(async (fen) => {
+                await this.onPhysicalBoardChange(fen);
+                await this.widgetManager.updateWidgetDetails(this, this.gameManager, this.boardManager);
+            });
+        }
     }
 
     setPlayerColor = async (color, withoutBoardChange = false) => {
