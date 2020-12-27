@@ -2,16 +2,16 @@ const {BrowserWindow, app} = require("electron");
 const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
 const {ipcMain} = require('electron');
-const {WINDOW_HEIGHT} = require("./src/constants");
-const {WINDOW_WIDTH} = require("./src/constants");
-const {ComputerPage} = require("./src/sites/chess.com/pages/computer");
-const {ExplorerPage} = require("./src/sites/chess.com/pages/explorer");
-const {OnlinePage} = require("./src/sites/chess.com/pages/online");
-const {ChessDotCom} = require("./src/sites/chess.com/chess_dot_com");
-const {DGTAsyncBoardManager} = require("./src/board/dgtasync");
-const {LiveChessBoardManager} = require("./src/board/livechess");
-const {GameManager} = require("./src/game_manager");
-const {WidgetManager} = require("./src/views/widget_manager");
+const {WINDOW_HEIGHT} = require("../src/constants");
+const {WINDOW_WIDTH} = require("../src/constants");
+const {ComputerPage} = require("../src/sites/chess.com/pages/computer");
+const {ExplorerPage} = require("../src/sites/chess.com/pages/explorer");
+const {OnlinePage} = require("../src/sites/chess.com/pages/online");
+const {ChessDotCom} = require("../src/sites/chess.com/chess_dot_com");
+const {DGTAsyncBoardManager} = require("../src/board/dgtasync");
+const {LiveChessBoardManager} = require("../src/board/livechess");
+const {GameManager} = require("../src/game_manager");
+const {WidgetManager} = require("../src/views/widget_manager");
 require('dotenv').config();
 const _ = require('lodash');
 

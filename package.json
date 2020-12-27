@@ -2,19 +2,25 @@
   "name": "dgt-for-chess-dot-com",
   "version": "1.0.0",
   "description": "An app to allow playing on Chess.com with a DGT board",
-  "main": "main.js",
+  "main": "public/electron.js",
   "scripts": {
-    "start": "electron .",
-    "react-start": "craco start",
-    "react-build": "craco build",
-    "react-eject": "react-scripts eject",
-    "ebuild": "npm run react-build && node_modules/.bin/build",
+    "start": "craco start",
+    "build": "craco build",
+    "eject": "react-scripts eject",
+    "ebuild": "npm run build && node_modules/.bin/build",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "dev": "concurrently \"yarn react-start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "build": {
-    "appId": "com.amitassaraf.dgtchess"
+    "appId": "com.amitassaraf.dgtchess",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
   },
   "homepage": "./",
   "repository": "https://github.com/amitassaraf/dgt-for-chess.com",
@@ -35,6 +41,7 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^11.1.0",
+    "electron-builder": "^22.9.1",
     "electron-devtools-installer": "^3.1.1"
   },
   "dependencies": {
@@ -43,7 +50,6 @@
     "chess.js": "^0.11.0",
     "concurrently": "^5.3.0",
     "dotenv": "^8.2.0",
-    "electron-builder": "^22.9.1",
     "electron-is-dev": "^1.2.0",
     "evergreen-ui": "^5.1.2",
     "lodash": "^4.17.20",
