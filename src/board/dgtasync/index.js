@@ -1,19 +1,19 @@
-const {BOARD_WEBSOCKET} = require("./constants");
+const {BOARD_WEBSOCKET} = require("../../constants");
 const spawn = require("child_process").spawn;
 const WebSocket = require('ws');
 const _ = require('lodash');
+const {BaseBoardManager} = require("../base_board_manager");
 
 
-class BoardManager {
+class DGTAsyncBoardManager extends BaseBoardManager {
     constructor(boardCallback) {
-        this.boardConnected = false;
-        this.boardCallback = boardCallback
+        super(boardCallback);
         this.process = undefined;
         this.ws = undefined;
     }
 
     spawn = () => {
-        this.process = spawn('python', ["./src/python/dgt_board_connector.py"]);
+        this.process = spawn('python', ["./src/board/dgtasync/dgt_board_connector.py"]);
         this.process.stdout.on('data', (data) => {
             // Do something with the data returned from python script
             try {
@@ -24,9 +24,15 @@ class BoardManager {
                         this.boardConnected = message.status !== 'disconnected';
                         console.log('Board connected.');
                         this.ws = new WebSocket(`ws://${BOARD_WEBSOCKET.HOSTNAME}:${BOARD_WEBSOCKET.PORT}/`);
+                        this.ws.on('open', () => {
+                            this.ws.send('get_battery');
+                        });
                         break;
                     case 'board':
                         this.boardCallback && this.boardCallback(message.fen);
+                        break
+                    case 'battery':
+                        this.batteryStatus = message.status;
                         break
                 }
             } catch (e) {
@@ -37,17 +43,14 @@ class BoardManager {
         console.log('Spawned process.');
     }
 
-    setPhysicalBoardCallback = (callback) => {
-        this.boardCallback = callback;
-    }
-
-    getBoard = _.throttle(async () => {
-        if (this.boardConnected && this.ws) {
+    _getBoard = async () => {
+        if (this.ws) {
             this.ws.send('get_board');
+            this.ws.send('get_battery');
         }
-    }, 500, {'trailing': false});
+    }
 }
 
 module.exports = {
-    BoardManager
+    DGTAsyncBoardManager
 }

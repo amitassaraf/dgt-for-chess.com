@@ -5,6 +5,18 @@ module.exports = {
         HOSTNAME: '127.0.0.1',
         PORT: 9991,
     },
+    LIVE_CHESS: {
+        HOSTNAME: '127.0.0.1',
+        PORT: 1982,
+        BASE_URL: '/api/v1.0'
+    },
+    BOARD_STATUS: {
+        CONNECTED: 'connected',
+        CONNECTING: 'connecting',
+        DISCONNECTED: 'disconnected',
+    },
+    WINDOW_WIDTH: 1200,
+    WINDOW_HEIGHT: 800,
     DEFAULT_POSITION: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
     COLUMN_TO_LETTER: {
         1: 'a',

@@ -12,12 +12,16 @@ class BasePage {
     ANALYSIS_PAGE = false;
     ANNOUNCE_REAL_PLAYER_MOVES = true;
 
-    constructor(gameManager, boardManager) {
+    constructor(widgetManager, gameManager, boardManager) {
         this.gameManager = gameManager;
         this.boardManager = boardManager;
+        this.widgetManager = widgetManager;
         this.isBoardInSync = false;
         this.puppeteer = undefined;
-        this.boardManager.setPhysicalBoardCallback(this.onPhysicalBoardChange);
+        this.boardManager.setPhysicalBoardCallback(async (fen) => {
+            await this.onPhysicalBoardChange(fen);
+            await this.widgetManager.updateWidgetDetails(this.gameManager, this.boardManager);
+        });
     }
 
     setPlayerColor = async (color, withoutBoardChange = false) => {

@@ -1,0 +1,70 @@
+NOTE:
+
+Launching the DGT LiveChess software and navigating to http://localhost:1982/doc/index.html will give you the API documentation
+for LiveChess.
+
+
+fetch("ws://127.0.0.1:1982/api/v1.0", {
+  "headers": {
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "no-cache",
+    "pragma": "no-cache",
+    "sec-websocket-extensions": "permessage-deflate; client_max_window_bits",
+    "sec-websocket-key": "QlcYg5ggxetS/prhR3GC2A==",
+    "sec-websocket-version": "13"
+  },
+  "body": null,
+  "method": "GET",
+  "mode": "cors"
+});
+
+
+GET ws://127.0.0.1:1982/api/v1.0 HTTP/1.1
+Host: 127.0.0.1:1982
+Connection: Upgrade
+Pragma: no-cache
+Cache-Control: no-cache
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Mobile Safari/537.36
+Upgrade: websocket
+Origin: https://www.chess.com
+Sec-WebSocket-Version: 13
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+Sec-WebSocket-Key: QlcYg5ggxetS/prhR3GC2A==
+Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
+
+
+
+HTTP/1.1 101 Switching Protocols
+Date: Mon, 27 Apr 2020 00:41:22 GMT
+Connection: Upgrade
+Sec-WebSocket-Accept: FY+dEiCp6ZnK1QyF/kdcaQqk8cg=
+Upgrade: WebSocket
+
+
+
+/*
+
+{"id":1,"call":"eboards"}
+
+{"response":"call","id":1,"param":[{"serialnr":"23946","source":"COM3","state":"ACTIVE","battery":"84%","comment":null,"board":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR","flipped":false,"clock":null}],"time":1587948082875}
+
+{"id":2,"call":"subscribe","param":{"feed":"eboardevent","id":1,"param":{"serialnr":"23946"}}}
+
+{"response":"call","id":2,"param":null,"time":1587948082887}
+
+{"response":"feed","id":1,"param":{"serialnr":"23946","flipped":false,"board":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR","clock":null},"time":1587948082889}
+
+{"response":"feed","id":1,"param":{"serialnr":"23946","flipped":false,"board":"rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR"},"time":1587948101585}
+
+{"response":"feed","id":1,"param":{"serialnr":"23946","flipped":false,"board":"rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPP1PPP/RNBQKBNR"},"time":1587948102620}
+
+{"response":"feed","id":1,"param":{"serialnr":"23946","flipped":false,"board":"rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR"},"time":1587948103614}
+
+{"response":"feed","id":1,"param":{"serialnr":"23946","flipped":false,"board":"rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKB1R"},"time":1587948131608}
+
+{"response":"feed","id":1,"param":{"serialnr":"23946","flipped":false,"board":"rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R"},"time":1587948132607}
+
+{"response":"feed","id":1,"param":{"serialnr":"23946","flipped":false,"board":"r1bqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R"},"time":1587948138581}
+
+*/

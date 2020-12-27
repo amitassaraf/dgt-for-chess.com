@@ -31,7 +31,7 @@ def on_disconnected():
 def on_board(board):
     print(json.dumps({
         "type": "board",
-        "fen": board.board_fen()[::-1],
+        "fen": board.board_fen()[::-1]
     }))
     sys.stdout.flush()
 
@@ -41,7 +41,7 @@ def on_clock(clock):
         "type": "clock",
         "left_time": clock.left_time,
         "right_time": clock.right_time,
-        "left_up": clock.left_up,
+        "left_up": clock.left_up
     }))
     sys.stdout.flush()
 
@@ -52,8 +52,15 @@ async def simple(websocket, path):
             board = await dgt.get_board()
             print(json.dumps({
                     "type": "board",
-                    "fen": board.board_fen()[::-1],
+                    "fen": board.board_fen()[::-1]
                 }))
+            sys.stdout.flush()
+        elif message == 'get_battery':
+            status = await dgt.get_battery_status()
+            print(json.dumps({
+                  "type": "battery",
+                  "status": status
+              }))
             sys.stdout.flush()
 
 
