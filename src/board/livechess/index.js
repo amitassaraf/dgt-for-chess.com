@@ -24,6 +24,15 @@ class LiveChessBoardManager extends BaseBoardManager {
         this.ws = undefined;
     }
 
+    killProcess = () => {
+        if (this.ws) {
+            try {
+                this.ws.terminate();
+            } catch (e) {
+            }
+        }
+    }
+
     spawn = () => {
         this.ws = new WebSocket(`ws://${LIVE_CHESS.HOSTNAME}:${LIVE_CHESS.PORT}${LIVE_CHESS.BASE_URL}`);
 

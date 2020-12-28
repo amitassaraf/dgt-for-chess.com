@@ -71,6 +71,17 @@ const main = async () => {
         widgetManager.resetView();
     })
 
+
+    process.on('exit', function() {
+        boardManager.killProcess();
+        app.quit();
+    });
+
+    ipcMain.on('app_quit', (event, info) => {
+        boardManager.killProcess();
+        app.quit();
+    });
+
     await siteManager.navigateAndInitialize(browser, window, pie);
     await siteManager.puppeteer.setDefaultNavigationTimeout(0);
     await siteManager.authenticate();

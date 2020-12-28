@@ -15,6 +15,19 @@ class DGTAsyncBoardManager extends BaseBoardManager {
         this.ws = undefined;
     }
 
+    killProcess = () => {
+        if (this.ws) {
+            try {
+                this.ws.terminate();
+            } catch (e) {
+            }
+        }
+
+        if (this.process) {
+            this.process.kill();
+        }
+    }
+
     spawn = () => {
         if (isDev) {
             this.process = spawn('python', [path.join(__dirname, '../../../assets/dgt_board_connector.py')]);

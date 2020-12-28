@@ -10,6 +10,10 @@ class BaseBoardManager {
     spawn = () => {
     }
 
+    killProcess = () => {
+
+    }
+
     setPhysicalBoardCallback = (callback) => {
         this.boardCallback = callback;
     }
