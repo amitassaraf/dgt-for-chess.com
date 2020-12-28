@@ -3,7 +3,7 @@ const isDev = require('electron-is-dev');
 const path = require('path');
 const {BOARD_STATUS} = require("../constants");
 
-const startURL = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, './build/index.html')}`;
+const startURL = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../../build/index.html')}`;
 
 class WidgetManager {
     constructor(window) {
