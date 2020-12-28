@@ -17,9 +17,9 @@ class DGTAsyncBoardManager extends BaseBoardManager {
 
     spawn = () => {
         if (isDev) {
-            this.process = spawn('python', [path.join(__dirname, '../../assets/dgt_board_connector.py')]);
+            this.process = spawn('python', [path.join(__dirname, '../../../assets/dgt_board_connector.py')]);
         } else {
-            this.process = spawn(fixPathForAsarUnpack(path.join(__dirname, '../../assets/dist/dgt_board_connector/dgt_board_connector')));
+            this.process = spawn(fixPathForAsarUnpack(path.join(__dirname, '../../../assets/dist/dgt_board_connector/dgt_board_connector')));
         }
 
         this.process.stdout.on('data', (data) => {
