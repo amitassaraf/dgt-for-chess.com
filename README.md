@@ -15,7 +15,7 @@
     <img src="https://i.imgur.com/j0f54ys.png" alt="Logo" height="150">
   </a>
 
-  <h3 align="center">DGT for Chess.com (Beta)</h3>
+  <h3 align="center">♟️ DGT for Chess.com (Beta)</h3>
 
   <p align="center">
     A cool desktop app that allows the use of DGT eboards to play on Chess.com
