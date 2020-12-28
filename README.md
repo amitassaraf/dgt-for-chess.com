@@ -20,10 +20,10 @@
   <p align="center">
     A cool desktop app that allows the use of DGT eboards to play on Chess.com
     <br />
-    <a href="https://gum.co/dgtforchessdotcom"><strong>Get the App »</strong></a>
+    <a href="https://gum.co/dgtforchessdotcom"><strong>Get the Beta App »</strong></a>
     <br />
     <br />
-    <a href="https://gum.co/dgtforchessdotcom">Download</a>
+    <a href="https://gum.co/dgtforchessdotcom">Download (Beta)</a>
     ·
     <a href="https://github.com/amitassaraf/dgt-for-chess.com/issues">Report Bug</a>
     ·
