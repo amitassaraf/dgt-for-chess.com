@@ -8,7 +8,7 @@
     "build": "craco build",
     "eject": "react-scripts eject",
     "electron-pack": "yarn build && yarn build --em.main=build/electron.js",
-    "build-python": "cd assets && pyinstaller dgt_board_connector.py && cd ..",
+    "build-python": "cd assets && pyinstaller dgt_board_connector.py --noconfirm && cd ..",
     "pack": "yarn electron-pack && yarn build-python && electron-builder --dir",
     "dist": "yarn electron-pack && yarn build-python && electron-builder",
     "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
