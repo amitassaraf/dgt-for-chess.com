@@ -72,13 +72,17 @@ const main = async () => {
     })
 
 
-    process.on('exit', function() {
-        boardManager.killProcess();
+    process.on('exit', () => {
+        if (boardManager) {
+            boardManager.killProcess();
+        }
         app.quit();
     });
 
     ipcMain.on('app_quit', (event, info) => {
-        boardManager.killProcess();
+        if (boardManager) {
+            boardManager.killProcess();
+        }
         app.quit();
     });
 
