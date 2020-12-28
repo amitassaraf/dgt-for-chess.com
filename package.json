@@ -11,7 +11,7 @@
     "build-python": "cd assets && pyinstaller dgt_board_connector.py --noconfirm && cd ..",
     "pack": "yarn electron-pack && yarn build-python && electron-builder --dir",
     "dist": "yarn electron-pack && yarn build-python && electron-builder",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
+    "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "build": {
     "appId": "com.amitassaraf.dgtchess",
@@ -44,7 +44,7 @@
     ]
   },
   "author": "Amit Assaraf",
-  "license": "CC0-1.0",
+  "license": "GNU GPLv3",
   "devDependencies": {
     "electron": "^11.1.0",
     "electron-builder": "^22.9.1",

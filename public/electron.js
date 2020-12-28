@@ -1,7 +1,7 @@
 const {BrowserWindow, app} = require("electron");
 const pie = require("puppeteer-in-electron")
 const puppeteer = require("puppeteer-core");
-const {ipcMain} = require('electron');
+const {ipcMain, Menu} = require('electron');
 const {WINDOW_HEIGHT} = require("../src/constants");
 const {WINDOW_WIDTH} = require("../src/constants");
 const {ComputerPage} = require("../src/sites/chess.com/pages/computer");
@@ -16,6 +16,24 @@ require('dotenv').config();
 const _ = require('lodash');
 
 
+const template = [
+    {
+        label: 'DGT for Chess.com',
+        submenu: [
+            {role: 'about'},
+            {type: 'separator'},
+            {role: 'services'},
+            {type: 'separator'},
+            {role: 'hide'},
+            {role: 'hideothers'},
+            {role: 'unhide'},
+            {type: 'separator'},
+            {role: 'quit'}
+        ]
+    },
+];
+
+
 const main = async () => {
     await pie.initialize(app);
     const browser = await pie.connect(app, puppeteer);
@@ -23,11 +41,13 @@ const main = async () => {
     let boardManager;
     const siteManager = new ChessDotCom();
 
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu);
 
     const window = new BrowserWindow({
         width: WINDOW_WIDTH,
         height: WINDOW_HEIGHT,
-        title: 'DGT For Chess'
+        title: 'DGT For Chess.com'
     });
 
     window.on('page-title-updated', (evt) => {
@@ -52,12 +72,11 @@ const main = async () => {
     })
 
     await siteManager.navigateAndInitialize(browser, window, pie);
+    await siteManager.puppeteer.setDefaultNavigationTimeout(0);
     await siteManager.authenticate();
     await siteManager.waitForSiteToBeReady();
 
     const GAME_MODES = [ExplorerPage, ComputerPage, OnlinePage];
-
-    await siteManager.puppeteer.setDefaultNavigationTimeout(0);
 
     while (!_.some(GAME_MODES.map((page) => siteManager.puppeteer.url().endsWith(new page().PAGE_SUB_URL)))) {
         await siteManager.puppeteer.waitForNavigation();

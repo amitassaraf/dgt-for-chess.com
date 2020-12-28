@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Dialog, Heading, Text} from 'evergreen-ui';
-
+import {Button, Card, Dialog, Heading, Text, InfoSignIcon} from 'evergreen-ui';
+import Logo from '../../../logo.png';
 const ipcRenderer = window.require("electron").ipcRenderer;
 
 const ConnectionTypeSelection = ({}) => {
@@ -25,10 +25,10 @@ const ConnectionTypeSelection = ({}) => {
             padding={40}
             flexDirection="column"
             border="default">
-            <Heading size={900} marginTop="default">DGT for Chess.com</Heading>
-            <Heading size={700} marginTop="default">Select board connection engine:</Heading>
+            <img src={Logo} width={'80%'} height={'auto'} style={{marginLeft: -16}}/>
+            <Heading size={700}>Select eboard connection engine:</Heading>
             <br/>
-            <Text color="muted" size={400}>Our embedded implementation is recommended but may be incompatible with some
+            <Text color="muted" size={400}>Our embedded implementation is recommended but may be incompatible with some eboard
                 models.</Text>
             <br/>
             <br/>
@@ -39,8 +39,6 @@ const ConnectionTypeSelection = ({}) => {
                 Use traditional DGT LiveChess 2.0
             </Button>
             <br/>
-            <Text color="muted" size={300}>(Mainly tested on DGT Bluetooth + USB eboard 3.1)</Text>
-            <br/>
             <Text color="muted" size={300}>Created with ♥️ by Amit Assaraf</Text>
 
             <Dialog
@@ -50,8 +48,14 @@ const ConnectionTypeSelection = ({}) => {
                 onCloseComplete={() => setLiveChessWarning(false)}
                 confirmLabel="All Good To Go"
             >
-                Before you continue, stop now and launch DGT LiveChess 2.0 in order for the connection to work. Make
-                sure your board is connected and recognized on DGT LiveChess before continuing.
+                <InfoSignIcon color="info" marginRight={6} />
+                <Text size={400}>
+                    Before you continue, stop now and launch DGT LiveChess 2.0 in order for the connection to work. Make
+                    sure your board is connected and recognized on DGT LiveChess 2.0 before continuing.
+                </Text>
+                <br />
+                <br />
+                <Text color="muted" size={300}>(Note: This option is not recommended for use on MacOS)</Text>
             </Dialog>
         </Card>
     );
