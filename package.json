@@ -21,6 +21,9 @@
       "node_modules/**/*",
       "assets/dist/dgt_board_connector/**/*"
     ],
+    "asarUnpack": [
+      "assets/dist/dgt_board_connector/**/*"
+    ],
     "directories": {
       "buildResources": "assets"
     }
