@@ -124,3 +124,7 @@ dist
 .DS_Store
 
 build/
+
+*.spec
+
+*.pyc

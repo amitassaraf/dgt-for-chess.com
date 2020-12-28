@@ -1,6 +1,7 @@
 const {BOARD_WEBSOCKET} = require("../../constants");
 const spawn = require("child_process").spawn;
 const WebSocket = require('ws');
+const isDev = require('electron-is-dev');
 const _ = require('lodash');
 const {BaseBoardManager} = require("../base_board_manager");
 
@@ -13,7 +14,12 @@ class DGTAsyncBoardManager extends BaseBoardManager {
     }
 
     spawn = () => {
-        this.process = spawn('python', ["./src/board/dgtasync/dgt_board_connector.py"]);
+        if (isDev) {
+            this.process = spawn('python', ["./assets/dgt_board_connector.py"]);
+        } else {
+            this.process = spawn('./assets/dist/dgt_board_connector/dgt_board_connector');
+        }
+
         this.process.stdout.on('data', (data) => {
             // Do something with the data returned from python script
             try {
