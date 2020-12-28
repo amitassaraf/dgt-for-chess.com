@@ -14,6 +14,8 @@
     "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "build": {
+    "productName": "DGT for Chess.com",
+    "copyright": "Copyright © 2020 Amit Assaraf",
     "appId": "com.amitassaraf.dgtchess",
     "files": [
       "build/**/*",
