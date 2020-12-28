@@ -39,7 +39,7 @@ const ConnectionTypeSelection = ({}) => {
                 Use traditional DGT LiveChess 2.0
             </Button>
             <br/>
-            <Text color="muted" size={300}>Created with ♥️ by Amit Assaraf</Text>
+            <Text color="muted" size={300}>(Beta 1.0.0) Created with ♥️ by Amit Assaraf</Text>
 
             <Dialog
                 isShown={showLiveChessWarning}
