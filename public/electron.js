@@ -57,7 +57,7 @@ const main = async () => {
     const widgetManager = new WidgetManager(window);
 
 
-    widgetManager.createView('select_connection', WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 500, 500);
+    widgetManager.createView('select_connection', WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 250, 500, 500);
 
     ipcMain.on('conType', (event, args) => {
         if (args === 'livechess') {
@@ -99,7 +99,7 @@ const main = async () => {
 
     // Game Mode Detected
     const Page = GAME_MODES.filter((page) => siteManager.puppeteer.url().endsWith(new page().PAGE_SUB_URL))[0];
-    widgetManager.createView('status_card', WINDOW_WIDTH - (310 / 2), WINDOW_HEIGHT - (110 / 2), 300, 100);
+    widgetManager.createView('status_card', WINDOW_WIDTH - (300 / 2), WINDOW_HEIGHT - (100 / 2), 300, 100);
     await siteManager.navigateToGamePage(new Page(widgetManager, gameManager, boardManager));
     await widgetManager.updateWidgetDetails(siteManager.currentGamePage, gameManager, boardManager);
 
