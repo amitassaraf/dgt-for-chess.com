@@ -128,3 +128,5 @@ build/
 *.spec
 
 *.pyc
+
+views.json
