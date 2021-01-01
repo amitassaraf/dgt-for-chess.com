@@ -1,6 +1,6 @@
 {
   "name": "dgt-for-chess-dot-com",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An app to allow playing on Chess.com with a DGT board",
   "main": "public/electron.js",
   "scripts": {
