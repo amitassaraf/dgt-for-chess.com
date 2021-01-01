@@ -32,8 +32,8 @@ const BoardStatusCard = ({}) => {
 
     return (
         <Card
-            height={75}
-            width={"100%"}
+            height={'100vh'}
+            width={"100vw"}
             background="blueTint"
             display="flex"
             alignItems="flex-start"

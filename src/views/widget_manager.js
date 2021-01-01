@@ -1,34 +1,61 @@
-const {BrowserView} = require("electron");
+const {BrowserWindow} = require("electron");
 const isDev = require('electron-is-dev');
 const path = require('path');
 const {BOARD_STATUS} = require("../constants");
+const fs = require('fs');
+const _ = require('lodash');
 
 const startURL = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../../build/index.html')}`;
+const VIEWS_FILE = 'views.json';
 
 class WidgetManager {
     constructor(window) {
         this.window = window;
         this.views = {};
+
+        try {
+            if (fs.existsSync(VIEWS_FILE)) {
+                //file exists
+                this.viewsLocationData = JSON.parse(fs.readFileSync(VIEWS_FILE)) || {};
+            } else {
+                this.viewsLocationData = {};
+            }
+        } catch(err) {
+            console.error(err);
+            this.viewsLocationData = {};
+        }
+
     }
 
-    resetView = () => {
-        this.window.setBrowserView(null);
+    resetView = (name) => {
+        this.views[name].close();
     }
 
     createView = (name, x, y, width, height) => {
-        const view = new BrowserView({
+        let location = this.viewsLocationData[name];
+        const view = new BrowserWindow({
             webPreferences: {
                 nodeIntegration: true,
-            }
-        })
+            },
+            parent: this.window,
+            frame: false
+        });
 
-        this.window.setBrowserView(view);
-        view.setBounds({x: x, y: y, width: width, height: height});
+        let locX = location && location.x || x, locY = location && location.y || y;
+
+        view.setBounds({x: locX, y: locY, width: width, height: height});
         this.views[name] = view;
         view.webContents.on('did-finish-load', () => {
             this.sendMessageToView(name, 'component', {name: name});
         });
         view.webContents.loadURL(startURL);
+        view.show();
+
+        view.on('move', _.throttle((event) => {
+            // Do move event action
+            this.viewsLocationData[name] = {x: event.sender.getBounds().x, y: event.sender.getBounds().y};
+            fs.writeFile(VIEWS_FILE, JSON.stringify(this.viewsLocationData, null, 2), ()=>{});
+        }, 150, {'trailing': false}));
     }
 
     sendMessageToView = (viewName, channel, message) => {
