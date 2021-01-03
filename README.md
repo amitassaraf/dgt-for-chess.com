@@ -90,6 +90,7 @@ Then enter the app and follow the instructions, once you enter a game, whether i
 
 See the [open issues](https://github.com/amitassaraf/dgt-for-chess.com/issues) for a list of proposed features (and known issues).
 
+ - [ ] Explore using http://dgtdrv.sourceforge.net/dgtdrv-3.html as another connection engine for more boards support
  - [ ] Windows Support
  - [ ] Support switching between game-modes without reopenning the app
  - [ ] Settings
